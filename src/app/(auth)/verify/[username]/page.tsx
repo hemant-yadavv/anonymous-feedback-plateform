@@ -40,7 +40,7 @@ const VerifyAccount = () => {
                 variant: 'default',
             });
 
-            router.replace('sign-in')
+            router.replace('/sign-in')
         } catch (error) {
             const axiosError = error as AxiosError<ApiResponse>;
             toast('Verification Failed!', axiosError.response?.data.message ?? 'Error verifying code', {
