@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Loader2 } from 'lucide-react'
+import toast from 'react-hot-toast';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -30,7 +31,7 @@ const SignUp = () => {
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const debounced = useDebounceCallback(setUsername, 500)
-  const { toast } = useToast()
+  // const { toast } = useToast()
   const router = useRouter()
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -71,15 +72,17 @@ const SignUp = () => {
       //   title: 'Success',
       //   description: response.data.message,
       // });
-      toast('Success', response.data.message, {
-        variant: 'default',
-      });
+      // toast('Success', response.data.message, {
+      //   variant: 'default',
+      // });
+      toast.success(response.data.message)
       router.replace(`/verify/${username}`);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
-      toast('Signup Failed', axiosError.response?.data.message ?? 'Error signing up', {
-        variant: 'destructive',
-      });
+      // toast('Signup Failed', axiosError.response?.data.message ?? 'Error signing up', {
+      //   variant: 'destructive',
+      // });
+      toast.error(axiosError.response?.data.message ?? 'Error signing up')
     } finally {
       setIsSubmitting(false);
     }

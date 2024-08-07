@@ -18,12 +18,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
+// import { toast } from '@/components/ui/use-toast';
 import * as z from 'zod';
 import { ApiResponse } from '@/types/ApiResponse';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { messageSchema } from '@/schemas/messageSchema';
+import toast from 'react-hot-toast';
 
 // const specialChar = '||';
 
@@ -68,17 +69,20 @@ const SendMessage = () => {
         username,
       });
 
-      toast(response.data.message, '', {
-        variant: 'default',
-      });
+      // toast(response.data.message, '', {
+      //   variant: 'default',
+      // });
+
+      toast.success(response.data.message)
 
       form.reset({ ...form.getValues(), content: '' });
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
 
-      toast('Error', axiosError.response?.data.message ?? 'Failed to sent message', {
-        variant: 'destructive',
-      });
+      // toast('Error', axiosError.response?.data.message ?? 'Failed to sent message', {
+      //   variant: 'destructive',
+      // });
+      toast.error(axiosError.response?.data.message ?? 'Failed to sent message')
     } finally {
       setIsLoading(false);
     }

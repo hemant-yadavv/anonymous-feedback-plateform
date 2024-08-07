@@ -15,6 +15,7 @@ import { User } from 'next-auth';
 import { useSession } from 'next-auth/react'
 import React, {useCallback, useEffect, useState, Key} from 'react'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
 
@@ -22,7 +23,7 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isSwitchLoading, setIsSwitchLoading] = useState(false)
 
-  const { toast } = useToast();
+  // const { toast } = useToast();
 
   const handleDeleteMessage = (messageId: string) => {
     setMessages(messages.filter((message) => message._id !== messageId))
@@ -45,9 +46,10 @@ const Dashboard = () => {
       setValue('acceptMessages', response.data.isAcceptingMessage)
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>
-      toast('Error', axiosError.response?.data.message || "Failed to fetch message setting", {
-        variant: 'destructive',
-      });
+      // toast('Error', axiosError.response?.data.message || "Failed to fetch message setting", {
+      //   variant: 'destructive',
+      // });
+      toast.error(axiosError.response?.data.message || "Failed to fetch message setting")
     }
     finally {
       setIsSwitchLoading(false)
@@ -61,16 +63,18 @@ const Dashboard = () => {
       const response = await axios.get<ApiResponse>(`/api/get-messages`)
       setMessages(response.data.message as unknown as Message[] || [])
       if (refresh) {
-        toast('Refreshed Messages', 'Showing lastest messages', {
-          variant: 'default',
-        })
+        // toast('Refreshed Messages', 'Showing lastest messages', {
+        //   variant: 'default',
+        // })
+        toast('Showing lastest messages')
       }
     }
     catch (error) {
       const axiosError = error as AxiosError<ApiResponse>
-      toast('', axiosError.response?.data.message || "Failed to fetch messages", {
-        variant: 'destructive',
-      });
+      // toast('', axiosError.response?.data.message || "Failed to fetch messages", {
+      //   variant: 'destructive',
+      // });
+      toast.error(axiosError.response?.data.message || "Failed to fetch messages")
     }
     finally {
       setIsLoading(false)
@@ -92,14 +96,16 @@ const Dashboard = () => {
         acceptMessages: !acceptMessages,
       })
       setValue('acceptMessages', !acceptMessages)
-      toast('Success', 'Message setting updated', {
-        variant: 'default',
-      })
+      // toast('Success', 'Message setting updated', {
+      //   variant: 'default',
+      // })
+      toast('Message setting updated')
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>
-      toast('Error', axiosError.response?.data.message || "Failed to update message setting", {
-        variant: 'destructive',
-      });
+      // toast('Error', axiosError.response?.data.message || "Failed to update message setting", {
+      //   variant: 'destructive',
+      // });
+      toast.error(axiosError.response?.data.message || "Failed to update message setting")
     }
     // finally {
     //   setIsSwitchLoading(false)
@@ -120,9 +126,10 @@ const Dashboard = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileUrl);
 
-    toast('URL Copied!', 'Profile URL has been copied to clipboard.', {
-      variant: 'default',
-    })
+    // toast('URL Copied!', 'Profile URL has been copied to clipboard.', {
+    //   variant: 'default',
+    // })
+    toast('URL copied to clipboard.')
   };
 
   return (

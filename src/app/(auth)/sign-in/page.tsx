@@ -24,10 +24,11 @@ import { Input } from "@/components/ui/input"
 import { Loader2 } from 'lucide-react'
 import { signInSchema } from '@/schemas/signInSchema'
 import { signIn } from 'next-auth/react'
+import toast from 'react-hot-toast';
 
 const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast()
+  // const { toast } = useToast()
   const router = useRouter()
 
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -50,18 +51,21 @@ const SignIn = () => {
 
       if (result?.error) {
         if (result.error === 'CredentialsSignin') {
-          toast('Login Failed', "Incorrect username or password", {
-            variant: 'destructive',
-          });
+          // toast('Login Failed', "Incorrect username or password", {
+          //   variant: 'destructive',
+          // });
+          toast.error("Incorrect username or password")
         }
         else {
-          toast('Error', result.error, {
-            variant: 'destructive',
-          });
+          // toast('Error', result.error, {
+          //   variant: 'destructive',
+          // });
+          toast.error(result.error)
         }
       }
 
       if (result?.url) {
+        toast.success("Login successful")
         router.replace('/dashboard');
       }
 
@@ -70,6 +74,7 @@ const SignIn = () => {
     } 
     catch (error) {
       console.log("Error signing in..")
+      toast.error("Error signing in")
       setIsSubmitting(false);
     }
     

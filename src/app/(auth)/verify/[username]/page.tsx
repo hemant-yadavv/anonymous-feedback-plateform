@@ -19,11 +19,12 @@ import { verifySchema } from '@/schemas/verifySchema';
 import { ApiResponse } from '@/types/ApiResponse';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 const VerifyAccount = () => {
     const router = useRouter()
     const params = useParams<{ username: string }>()
-    const { toast } = useToast();
+    // const { toast } = useToast();
 
     const form = useForm<z.infer<typeof verifySchema>>({
         resolver: zodResolver(verifySchema),
@@ -36,16 +37,17 @@ const VerifyAccount = () => {
                 code: data.code
             })
 
-            toast('Success', response.data.message, {
-                variant: 'default',
-            });
-
+            // toast('Success', response.data.message, {
+            //     variant: 'default',
+            // });
+            toast.success(response.data.message)
             router.replace('/sign-in')
         } catch (error) {
             const axiosError = error as AxiosError<ApiResponse>;
-            toast('Verification Failed!', axiosError.response?.data.message ?? 'Error verifying code', {
-                variant: 'destructive',
-            });
+            // toast('Verification Failed!', axiosError.response?.data.message ?? 'Error verifying code', {
+            //     variant: 'destructive',
+            // });
+            toast.error(axiosError.response?.data.message ?? 'Error verifying code')
         }
     }
 
