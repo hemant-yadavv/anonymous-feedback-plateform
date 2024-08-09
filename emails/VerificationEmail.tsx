@@ -20,7 +20,7 @@ import {
     return (
       <Html lang="en" dir="ltr">
         <Head>
-          <title>Verification Code</title>
+          <title>Verification Code || True Feedback</title>
           <Font
             fontFamily="Roboto"
             fallbackFontFamily="Verdana"
@@ -51,14 +51,14 @@ import {
               If you did not request this code, please ignore this email.
             </Text>
           </Row>
-          {/* <Row>
+          <Row>
             <Button
-              href={`http://localhost:3000/verify/${username}`}
+              href={`https://trueefeedback.vercel.app/verify/${username}`}
               style={{ color: '#61dafb' }}
             >
               Verify here
             </Button>
-          </Row> */}
+          </Row>
         </Section>
       </Html>
     );
