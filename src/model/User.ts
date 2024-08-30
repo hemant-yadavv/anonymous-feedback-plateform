@@ -1,14 +1,15 @@
-import mongoose, {Schema, Document} from "mongoose"
+import mongoose, { Schema, Document } from "mongoose"
+import nodemailer from "nodemailer"
 
-export interface Message extends Document{
+export interface Message extends Document {
     content: string;
     createdAt: Date;
 }
 
 const MessageSchema: Schema<Message> = new Schema({
-    content:{
+    content: {
         type: String,
-        required:true
+        required: true
     },
     createdAt: {
         type: Date,
@@ -17,7 +18,7 @@ const MessageSchema: Schema<Message> = new Schema({
     }
 })
 
-export interface User extends Document{
+export interface User extends Document {
     username: string;
     email: string;
     password: string;
@@ -29,7 +30,7 @@ export interface User extends Document{
 }
 
 const UserSchema: Schema<User> = new Schema({
-    username:{
+    username: {
         type: String,
         required: [true, "Username is required !"],
         trim: true,
@@ -39,7 +40,7 @@ const UserSchema: Schema<User> = new Schema({
         type: String,
         required: [true, "Email is required !"],
         unique: true,
-        match: [/.+\@.+\..+/,"Please use a valid email address !"]
+        match: [/.+\@.+\..+/, "Please use a valid email address !"]
     },
     password: {
         type: String,
@@ -64,6 +65,41 @@ const UserSchema: Schema<User> = new Schema({
     messages: [MessageSchema]
 })
 
-const UserModel = ( mongoose.models.User as mongoose.Model<User> ) || mongoose.model<User>("User", UserSchema)
+// post middleware
+UserSchema.post("save", async function (doc) {
+    try {
+        // doc is the document which is created in db
+        // console.log("Doc",doc);
+
+        // send mail
+        let transporter = nodemailer.createTransport({
+            host: process.env.MAIL_HOST,
+
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS
+            }
+        });
+
+        let info = await transporter.sendMail({
+            from: `True Feedback`,
+            to: doc.email,
+            subject: "Email Verification",
+            html: `<h2>Hello Je</h2>
+                    <p>OTP is: ${doc.verifyCode}</p>
+                    <p>Please verify your email address by clicking on the following link: 
+                    <a href='https://trueefeedback.vercel.app/verify/${doc.username}'>Verify Email</a></p>`,
+        })
+
+        // console.log("Info",info);
+
+    } catch (error) {
+        console.error(error);
+    }
+})
+
+
+
+const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema)
 
 export default UserModel;
