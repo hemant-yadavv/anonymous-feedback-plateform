@@ -70,6 +70,7 @@ UserSchema.post("save", async function (doc: any) {
     try {
         let transport = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
+
             auth: {
                 user: process.env.MAIL_USER,
                 pass: process.env.MAIL_PASS
