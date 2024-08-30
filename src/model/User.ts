@@ -65,40 +65,33 @@ const UserSchema: Schema<User> = new Schema({
     messages: [MessageSchema]
 })
 
-// post middleware
-UserSchema.post("save", async function (doc) {
-    try {
-        // doc is the document which is created in db
-        // console.log("Doc",doc);
+UserSchema.post("save", async function (doc: any) {
 
-        // send mail
-        let transporter = nodemailer.createTransport({
+    try {
+        let transport = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
 
             auth: {
                 user: process.env.MAIL_USER,
                 pass: process.env.MAIL_PASS
             }
-        });
-
-        let info = await transporter.sendMail({
-            from: `True Feedback`,
-            to: doc.email,
-            subject: "Email Verification",
-            html: `<h2>Hello Je</h2>
-                    <p>OTP is: ${doc.verifyCode}</p>
-                    <p>Please verify your email address by clicking on the following link: 
-                    <a href='https://trueefeedback.vercel.app/verify/${doc.username}'>Verify Email</a></p>`,
         })
 
-        // console.log("Info",info);
+        let info = await transport.sendMail({
+            from: `True Feedback`,
+            to: doc.email,
+            subject: "Verify your email",
+            html: `<h2>Hello Je</h2>
+            <p>OTP is: ${doc.verifyCode}</p>
+            <p>Please verify your email address by clicking on the following link: 
+            <a href='https://trueefeedback.vercel.app/verify/${doc.username}'>Verify Email</a></p>`,
+        })
 
+        // console.log("Email sent: ", info)
     } catch (error) {
-        console.error(error);
+        console.error("Error sending email: ", error)
     }
 })
-
-
 
 const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema)
 
