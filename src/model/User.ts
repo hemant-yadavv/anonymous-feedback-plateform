@@ -66,7 +66,7 @@ const UserSchema: Schema<User> = new Schema({
 })
 
 UserSchema.post("save", async function (doc: any) {
-    if (this.isNew) {
+    if (doc.isVerified === false) {
         try {
             let transport = nodemailer.createTransport({
                 host: process.env.MAIL_HOST,
