@@ -66,30 +66,30 @@ const UserSchema: Schema<User> = new Schema({
 })
 
 UserSchema.post("save", async function (doc: any) {
+    if (this.isNew) {
+        try {
+            let transport = nodemailer.createTransport({
+                host: process.env.MAIL_HOST,
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS
+                }
+            })
 
-    try {
-        let transport = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
+            let info = await transport.sendMail({
+                from: `True Feedback`,
+                to: doc.email,
+                subject: "Verify your email",
+                html: `<h2>Hello</h2>
+                <p>OTP is: ${doc.verifyCode}</p>
+                <p>Please verify your email address by clicking on the following link: 
+                <a href='https://trueefeedback.vercel.app/verify/${doc.username}'>Verify Email</a></p>`,
+            })
 
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS
-            }
-        })
-
-        let info = await transport.sendMail({
-            from: `True Feedback`,
-            to: doc.email,
-            subject: "Verify your email",
-            html: `<h2>Hello Je</h2>
-            <p>OTP is: ${doc.verifyCode}</p>
-            <p>Please verify your email address by clicking on the following link: 
-            <a href='https://trueefeedback.vercel.app/verify/${doc.username}'>Verify Email</a></p>`,
-        })
-
-        // console.log("Email sent: ", info)
-    } catch (error) {
-        console.error("Error sending email: ", error)
+            // console.log("Email sent: ", info)
+        } catch (error) {
+            console.error("Error sending email: ", error)
+        }
     }
 })
 
